@@ -4,5 +4,5 @@
 int main(void) {
 	puts("!!!Hello kitty!!!"); /* prints !!!Hello World!!! */
 	return EXIT_SUCCESS;
-	/* no comentes nada */
+	/*un comentario*/
 }
