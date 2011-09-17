@@ -1,0 +1,18 @@
+== Que son las common-libs2? ==
+
+ Es una version re-hecha de las common-libs, pero diseñadas para ser mas simple de utilizar
+mas y mas declarativas. La particularidad de esta es que estan hechas con un patron orientado
+a acercar los conceptos de objetos a C.
+
+
+== Building ==
+
+
+== Tests ==
+
+
+== Links ==
+
+
+
+
