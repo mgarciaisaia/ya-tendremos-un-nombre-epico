@@ -39,4 +39,4 @@ Proceso planificador de disco
  ○ Implementar Consola.
  ○ Conexión con el Proceso RAID1.
  ○ Algoritmo de planificación sin inanición.
- ○ Disco Asincrónico.
+ ○ Disco Asincrónico
