@@ -31,7 +31,6 @@
 								<option id="gnu.c.compiler.exe.debug.option.debugging.level.836945503" name="Debug Level" superClass="gnu.c.compiler.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1471024906" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="_FILE_OFFSET_BITS=64"/>
-									<listOptionValue builtIn="false" value="FUSE_USE_VERSION=26"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1799037425" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
