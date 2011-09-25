@@ -5,6 +5,38 @@
 #include <stdlib.h>
 #include <fuse.h>
 
+struct fat32_bootRecord {
+	char jumpInstruction[3];
+	char oemName[8];
+	int16_t sectorSize;
+	char clusterSize;
+	int16_t fatOffset; // Sectores desde el inicio de este sector hasta la primer FAT (mínimo 1: el boot sector)
+	char fatsCount; // Cantidad de FATs
+	int16_t uselessField1;
+	int16_t sectorCountSmall; // Cantidad de sectores del disco, o 0 si son mas de 64k
+	char deviceType;
+	int16_t uselessField2;
+	int16_t trackSectors; // Sectores por pista (S de CHS)
+	int16_t heads; // H de CHS
+	int32_t bootRecordOffset;
+	int32_t sectorCountLarge; // Cantidad de sectores del disco si son mas de 64k, ver sectorCountSmall sino
+	int32_t fatSize; // Sectores por FAT
+	int16_t fatConversionFlags; // Flags de la conversion FAT12/16 => FAT32
+	int16_t fatVersion; // 0 = FAT32
+	int32_t rootDirectory;
+	int16_t fileSystemInfoSector;
+	int16_t bootSectorBackup;
+	char uselessField3[12];
+	char physicalDeviceType; // 0x00 = removible; 0x80 = disco rigido
+	char uselessField4;
+	char extendedBootSignature;
+	int32_t serialNumber;
+	char volumeLabel[11];
+	char fatType[8]; // Siempre "FAT32   "
+	char bootCode[420]; // "NO LE INTERESA A NADIE!!" :)
+	char bootSectorSignature[2]; // Siempre 0x55 0xAA
+}__attribute__ ((__packed__));
+
 /**
  * Create and open a file
  *

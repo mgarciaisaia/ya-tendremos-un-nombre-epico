@@ -1,0 +1,42 @@
+Proceso File System
+ ○ Leer el Boot Sector.
+ ○ Leer el FAT Region.
+ ○ Obtener clusters libres.
+ ○ Agregar o remover uno o varios clusters libre a una cadena de clusters.
+ ○ Obtener el contenido de un cluster en base al número del cluster.
+ ○ Leer entradas de archivo, directorio o nombre largo a partir de un cluster y todos sus clusters encadenados.
+ ○ Leer el contenido de un directorio y de todos sus subdirectorios.
+ ○ Listar Directorios.
+ ○ Leer Archivos.
+ ○ Truncar un archivo.
+ ○ Renombrar un archivo.
+ ○ Consola. 
+ ○ Escribir Archivos.
+ ○ Modificar Archivos.
+ ○ Conexión con RAID o Disco.
+ ○ Cache.
+ ○ Sincronización de múltiples accesos al File System.
+ ○ Crear Archivos.
+ ○ Crear Carpetas.
+
+ 
+Proceso RAID 1
+ ○ Implementación de colas de peticiones.
+ ○ Definición de interfaz con Proceso Disco y Proceso File System
+ ○ Algoritmo de distribución entre colas.
+ ○ Consola.
+ ○ Conexión con múltiples discos.
+ ○ Asignación de Threads a cada conexión de disco.
+ ○ Distribución de peticiones entre los discos.
+ ○ Sincronización de Discos.
+
+ 
+Proceso planificador de disco
+ ○ Abrir el archivo disco.
+ ○ Leer un Sector.
+ ○ Escribir un sector.
+ ○ Conexión con la Consola.
+ ○ Implementar Consola.
+ ○ Conexión con el Proceso RAID1.
+ ○ Algoritmo de planificación sin inanición.
+ ○ Disco Asincrónico.

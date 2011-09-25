@@ -1,0 +1,56 @@
+== Boot Sector ==
+0x00	3	Jump instruction
+0x03	8	Nombre fabricante rellenado con 0x20
+0x0b	2	Bytes x sector (tipico: 512)
+0x0d	1	Sectores x cluster (potencias de 2 entre 1 y 128)
+0x0e	2	Sectores desde el inicio de este sector hasta la primer FAT (mínimo 1: este sector)
+0x10	1	Cantidad de FATs (tipico: 2)
+0x11	2	Deprecado. Siempre 0.
+0x13	2	Cantidad de sectores del disco, o 0 si son más de 64k (van en 0x20)
+0x15	1	Tipo de dispositivo. 0xF8 = Disco Rígido / Disco con CHS
+0x16	2	Deprecado. Siempre 0.
+0x18	2	Sectores x pista. (S de CHS)
+0x1A	2	Cabezas (H de CHS)
+0x1C	4	Offset de esta partición (sectores desde el principio del disco hasta este sector). Tipico: 0.
+0x20	4	Cantidad de sectores del disco si es que son más de 64k. Siempre ver primero 0x10.
+0x24	4	Sectores x FAT
+0x28	2	Debiera ser 0. Flags de la conversión FAT12/16 => FAT32
+0x2A	2	Siempre 0. Versión de FAT
+0x2C	4	Cluster del directorio raiz
+0x30	2	Sector del FS Info Sector
+0x32	2	Sector del backup de este sector (Boot Sector Backup)
+0x34	12	Reservado
+0x40	1	Tipo de dispositivo físico. 0x00: removible. 0x80: disco rígido.
+0x41	1	Reservado.
+0x42	1	"Extended boot signature". Típicamente 0x29, dice que siguen ID, Volume label y FAT type. 0x28 solo sigue ID.
+0x43	4	ID / Numero de serie.
+0x47	11	Etiqueta del volumen
+0x52	8	Tipo de FAT: Siempre "FAT32   " (con 3 0x20)
+0x5A	420	Código de boot. Ignorar :)
+0x1FE	2	Firma de sector de boot. Siempre 0x55 0xAA.
+
+== FS Information Sector ==
+0x00	4	Firma. Siempre 0x52 0x52 0x61 0x41 ("RRaA")
+0x04	480	Reservado. Siempre todos 0x00.
+0x1E4	4	Firma. Siempre 0x72 0x72 0x41 0x61 ("rrAa")
+0x1E8	4	Clusters libres, o -1
+0x1EC	4	Último cluster allocado (más reciente)
+0x1F0	12	Reservado. Siempre todos 0x00.
+0x1FC	4	Firam. Siempre 0x00 0x00 0x55 0xAA
+
+
+== Constantes de la FAT ==
+:: Estos son los posibles valores de las entradas de la FAT para cada cluster ::
+0x00000000	FREE_CLUSTER
+0x00000001	RESERVED_CLUSTER
+0x0FFFFFF6	RESERVED_CLUSTER
+0x0FFFFFF7	BAD_SECTOR
+0x0FFFFFF8	END_OF_CLUSTER (minimo)
+
+isFreeCluster	return valor == 0x00000000
+isReservedCluster	return valor == 0x00000001 || valor == 0x0FFFFFF6
+isBadSector	return valor == 0x0FFFFFF7
+isEndOfCluster	return valor > 0x0FFFFFF8
+
+
+== 
