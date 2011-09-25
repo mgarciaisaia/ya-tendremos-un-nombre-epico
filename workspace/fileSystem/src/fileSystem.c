@@ -17,7 +17,7 @@
  *
  * Introduced in version 2.5
  */
-int fat32_create(const char *path, mode_t mode, struct fuse_file_info *fi) {
+int fat32_create(const char *path, mode_t mode, struct fuse_file_info *fileInfo) {
 	//FIXME: implementar
 	return -1;
 }
@@ -32,7 +32,7 @@ int fat32_create(const char *path, mode_t mode, struct fuse_file_info *fi) {
  *
  * Changed in version 2.2
  */
-int fat32_open(const char *path, struct fuse_file_info *fi) {
+int fat32_open(const char *path, struct fuse_file_info *fileInfo) {
 	//FIXME: implementar
 	return -1;
 }
@@ -53,7 +53,7 @@ int fat32_open(const char *path, struct fuse_file_info *fi) {
 // can return with anything up to the amount of data requested. nor
 // with the fusexmp code which returns the amount of data also
 // returned by read.
-int fat32_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi) {
+int fat32_read(const char *path, char *output, size_t size, off_t offset, struct fuse_file_info *fileInfo) {
 	//FIXME: implementar
 	return -1;
 }
@@ -68,7 +68,7 @@ int fat32_read(const char *path, char *buf, size_t size, off_t offset, struct fu
  */
 // As  with read(), the documentation above is inconsistent with the
 // documentation for the write() system call.
-int fat32_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi) {
+int fat32_write(const char *path, const char *input, size_t size, off_t offset, struct fuse_file_info *fileInfo) {
 	//FIXME: implementar
 	return -1;
 }
@@ -96,7 +96,7 @@ int fat32_write(const char *path, const char *buf, size_t size, off_t offset, st
  *
  * Changed in version 2.2
  */
-int fat32_flush(const char *path, struct fuse_file_info *fi) {
+int fat32_flush(const char *path, struct fuse_file_info *fileInfo) {
 	//FIXME: implementar
 	return -1;
 }
@@ -115,13 +115,13 @@ int fat32_flush(const char *path, struct fuse_file_info *fi) {
  *
  * Changed in version 2.2
  */
-int fat32_release(const char *path, struct fuse_file_info *fi) {
+int fat32_release(const char *path, struct fuse_file_info *fileInfo) {
 	//FIXME: implementar
 	return -1;
 }
 
 /** Change the size of a file */
-int fat32_truncate(const char *path, off_t newsize) {
+int fat32_truncate(const char *path, off_t newSize) {
 	//FIXME: implementar
 	return -1;
 }
@@ -159,7 +159,7 @@ int fat32_mkdir(const char *path, mode_t mode) {
  *
  * Introduced in version 2.3
  */
-int fat32_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi) {
+int fat32_readdir(const char *path, void *output, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fileInfo) {
 	//FIXME: implementar
 	return -1;
 }
@@ -183,7 +183,7 @@ int fat32_getattr(const char *path, struct stat *statbuf) {
 
 /** Rename a file */
 // both path and newpath are fs-relative
-int fat32_rename(const char *path, const char *newpath) {
+int fat32_rename(const char *currentPath, const char *newPath) {
 	//FIXME: implementar
 	return -1;
 }
