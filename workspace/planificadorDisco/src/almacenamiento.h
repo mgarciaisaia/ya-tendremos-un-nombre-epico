@@ -6,11 +6,8 @@
  * tratan con el almacenamiento fisico de los datos, es decir, el RAID y el
  * disco
  */
-/*
- * TODO: definir los datos del struct
- */
-struct datos_sector {
 
-};
+
+typedef char fat32_sector[512];
 
 #endif /* ALMACENAMIENTO_H_ */
