@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/mman.h>
+#include <sys/stat.h>
 #include "almacenamiento.h"
 
 static const int SECTOR_SIZE = 512;
@@ -12,6 +13,7 @@ typedef char* string;
 struct configuracion {
 	string rutaAlDisco;
 	int archivoDisco;
+	off_t tamanioDisco;
 };
 
 struct fat32_bootRecord {
@@ -76,27 +78,30 @@ void configurar(int argc, string argv[], struct configuracion *configuracion) {
 
 void abrirArchivoDisco(struct configuracion *configuracion) {
 	configuracion->archivoDisco = open(configuracion->rutaAlDisco, O_RDWR);
+	struct stat statsDisco;
+	fstat(configuracion->archivoDisco, &statsDisco);
+	configuracion->tamanioDisco = statsDisco.st_size;
 	perror("abrirARchivo");
 }
 
 void leerSector(int32_t numeroSector, fat32_sector *data, struct configuracion *configuracion) {
-	char *dataFile = mmap((caddr_t) 0, getpagesize(), PROT_READ, MAP_SHARED, configuracion->archivoDisco, 0);
+	char *dataFile = mmap((caddr_t) 0, configuracion->tamanioDisco, PROT_READ, MAP_SHARED, configuracion->archivoDisco, 0);
 	if(dataFile == (caddr_t) -1) {
 		perror("mmap de read sector");
 		exit(1);
 	}
 	memcpy(data, dataFile + (numeroSector * SECTOR_SIZE), SECTOR_SIZE);
-	munmap(dataFile, SECTOR_SIZE);
+	munmap(dataFile, configuracion->tamanioDisco);
 }
 
 void escribirSector(int32_t numeroSector, fat32_sector *data, struct configuracion *configuracion) {
-	char *dataFile = mmap((caddr_t) 0, getpagesize(), PROT_WRITE, MAP_SHARED, configuracion->archivoDisco, 0);
+	char *dataFile = mmap((caddr_t) 0, configuracion->tamanioDisco, PROT_WRITE, MAP_SHARED, configuracion->archivoDisco, 0);
 	if(dataFile == (caddr_t) -1) {
 		perror("mmap de write sector");
 		exit(1);
 	}
 	memcpy(dataFile + (numeroSector * SECTOR_SIZE), data, SECTOR_SIZE);
-	munmap(dataFile, SECTOR_SIZE);
+	munmap(dataFile, configuracion->tamanioDisco);
 }
 
 int main(int argc, string *argv) {
@@ -104,16 +109,17 @@ int main(int argc, string *argv) {
 	configurar(argc, argv, &configuracion);
 	abrirArchivoDisco(&configuracion);
     fat32_sector data;
-	leerSector(0, &data, &configuracion);
+	leerSector(10, &data, &configuracion);
 	printf("Data: %s\n", data);
-	leerSector(1, &data, &configuracion);
+	leerSector(0, &data, &configuracion);
 	printf("Sector1: %s\n", data);
-	struct fat32_bootRecord bootRecord;
-	memcpy(&bootRecord, data, sizeof data);
-	printf("%d\n", bootRecord.serialNumber);
-	//strcpy(data, "CHONEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-	//escribirSector(10, &data, &configuracion);
+	printf("PAGESIZE: %d\n%d\n", getpagesize(), getpagesize() / SECTOR_SIZE);
+	strcpy(data, "VA EL 10");
+	escribirSector(10, &data, &configuracion);
+	strcpy(data, "                                                   ");
+	printf("%s", data);
 	leerSector(10, &data, &configuracion);
 	printf("%s", data);
+	close(configuracion.archivoDisco);
 	return EXIT_SUCCESS;
 }
