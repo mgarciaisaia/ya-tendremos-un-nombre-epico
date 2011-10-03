@@ -37,6 +37,42 @@ struct fat32_bootRecord {
 	char bootSectorSignature[2]; // Siempre 0x55 0xAA
 }__attribute__ ((__packed__));
 
+struct fat32_config_boot_sector {
+	int16_t sectorSize;
+	char clusterSize;
+	int16_t fatOffset; // Sectores desde el inicio de este sector hasta la primer FAT (mínimo 1: el boot sector)
+	int32_t bootRecordOffset;
+	int32_t sectorCount; // Cantidad de sectores del disco si son mas de 64k, ver sectorCountSmall sino
+	int32_t fatSize; // Sectores por FAT
+	int16_t fatVersion; // 0 = FAT32
+	int32_t rootDirectory;
+	int16_t fileSystemInfoSector;
+	int16_t bootSectorBackup;
+	char volumeLabel[11];
+	char fatType[8]; // Siempre "FAT32   "
+}__attribute__ ((__packed__));
+
+struct fileSystemInfoSector {
+	int32_t signature; //FS information sector signature (0x52 0x52 0x61 0x41 / "RRaA")
+	char reserved[480]; //Reserved (byte values are 0x00)
+	int32_t signature_2; //FS information sector signature (0x72 0x72 0x41 0x61 / "rrAa")
+	int32_t free_clusters; //Number of free clusters on the drive, or -1 if unknown
+	int32_t recently_cluster; //Number of the most recently allocated cluster
+	char reserved_2[12]; //Reserved (byte values are 0x00)
+	int32_t signature_3; // FS information sector signature (0x00 0x00 0x55 0xAA)
+}__attribute__ ((__packed__));
+
+void leerBootSector(char bootSector[512],
+		struct fat32_config_boot_sector * configBootSector) {
+	configBootSector->clusterSize = bootSector[0x0D];
+	configBootSector->bootRecordOffset = (int32_t) bootSector[0x1C];
+	configBootSector->sectorSize = (int16_t) bootSector[0x0B];
+	configBootSector->fatOffset = (int16_t) bootSector[0x0E];
+	//FIXME:Completar. Falta terminar de armar configBootSector.
+
+}
+
+
 /**
  * Create and open a file
  *
