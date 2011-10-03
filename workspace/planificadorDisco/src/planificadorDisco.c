@@ -113,7 +113,6 @@ int main(int argc, string *argv) {
 	printf("Data: %s\n", data);
 	leerSector(0, &data, &configuracion);
 	printf("Sector1: %s\n", data);
-	printf("PAGESIZE: %d\n%d\n", getpagesize(), getpagesize() / SECTOR_SIZE);
 	strcpy(data, "VA EL 10");
 	escribirSector(10, &data, &configuracion);
 	strcpy(data, "                                                   ");
