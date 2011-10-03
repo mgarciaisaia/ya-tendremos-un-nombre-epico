@@ -1,0 +1,9 @@
+===== Hilos en el Proceso RAID =======
+
+Facundo Viale:
+La idea es que tu select solo reciba pedidos del PFS, y acepte conexiones del PPD. Una vez establecida la conexión, se crea un thread asociado al PPD.
+De ahi en mas, todos los pedidos del PFS son encolados, en una cola la cual tu thread esta observando constantemente. Extrae los nuevos elementos y los envia al PPD. Después de eso el thread sigue leyendo la cola y queda a la espera de la respuesta del PPD. Cuando el thread recibe la respuesta se la envía al PFS. 
+Lo que es envió de información hacia el PPD y recepción de información para luego enviarla al PFS la hace el thread asociado al PPD.
+
+Gastón Prieto:
+Tenes un thread que esta escuchando conexiones que vengan del PFS y nuevas conexiones de procesos PPD, entonces, se te conecta un PPD, aceptas la conexión y lanzas un thread para dicho PPD. Te llega un pedido del PFS se lo comunicas al thread que tiene un PPD a traves de la cola (como vos decías), el thread lo "saca" de la cola y se encarga de mandarlo al PPD, en algún momento te llega la respuesta (pero el thread que se entera de la respuesta es el thread que tiene asignado es PPD, no el thread que lo disparo) y el thread asignado al PPD se encarga de responderle al PFS, como sabe que a que socket responder? de algún forma en el pedido que pones en la cola deberías decirselo ;)
