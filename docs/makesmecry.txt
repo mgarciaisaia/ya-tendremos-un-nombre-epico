@@ -1,0 +1,9 @@
+02:09:45 [operativos(master)]$ pull
+	A	workspace/procesoRAID/src/cola.c
+r28 = 3c542759b30d0adf054de6694af083f943ccf8b9 (refs/remotes/trunk)
+First, rewinding head to replay your work on top of it...
+Fast-forwarded master to refs/remotes/trunk.
+02:10:00 [operativos(master)]$ 
+
+
+=== Un commit para gobernarlos a todos.
