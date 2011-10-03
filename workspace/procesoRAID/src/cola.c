@@ -7,7 +7,6 @@ typedef struct cola cola;
 struct cola {
 	nodo * inicio;
 	nodo * fin;
-	agregar * = agregar;
 };
 
 struct nodo {
@@ -55,7 +54,6 @@ void * sacar(void * contenido, cola * cola) {
 				}
 			}
 		}
-
 	}
 	return NULL;
 }
@@ -64,5 +62,4 @@ void limpiar(cola * cola) {
 	while (cola->inicio != NULL) {
 		sacar(cola->inicio->contenido, cola);
 	}
-
 }
