@@ -6,7 +6,7 @@
 #include <ctype.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
-#include "almacenamiento.h"
+#include "src/almacenamiento.h"
 #include "src/configuracion.h"
 #include "src/log.h"
 

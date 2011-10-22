@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fuse.h>
+#include "src/utils.h"
+#include "src/almacenamiento.h"
 
 struct fat32_bootRecord {
 	char jumpInstruction[3];
@@ -48,8 +50,6 @@ struct fat32_config_boot_sector {
 	int32_t rootDirectory;
 	int16_t fileSystemInfoSector;
 	int16_t bootSectorBackup;
-	char volumeLabel[11];
-	char fatType[8]; // Siempre "FAT32   "
 }__attribute__ ((__packed__));
 
 struct fileSystemInfoSector {
@@ -62,14 +62,18 @@ struct fileSystemInfoSector {
 	int32_t signature_3; // FS information sector signature (0x00 0x00 0x55 0xAA)
 }__attribute__ ((__packed__));
 
-void leerBootSector(char bootSector[512],
+void leerBootSector(fat32_sector bootSector,
 		struct fat32_config_boot_sector * configBootSector) {
 	configBootSector->clusterSize = bootSector[0x0D];
-	configBootSector->bootRecordOffset = (int32_t) bootSector[0x1C];
-	configBootSector->sectorSize = (int16_t) bootSector[0x0B];
-	configBootSector->fatOffset = (int16_t) bootSector[0x0E];
-	//FIXME:Completar. Falta terminar de armar configBootSector.
-
+	configBootSector->bootRecordOffset = swap_int32( (int32_t) bootSector[0x1C] );
+	configBootSector->sectorSize = swap_int16((int16_t) bootSector[0x0B]);
+	configBootSector->fatOffset = swap_int16((int16_t) bootSector[0x0E]);
+	configBootSector->sectorCount= swap_int32((int32_t) bootSector[0x20]);
+	configBootSector->fatSize=swap_int32((int32_t) bootSector[0x16]);
+	configBootSector->fatVersion = swap_int16((int16_t) bootSector[0x2A]);
+	configBootSector->rootDirectory= swap_int32((int32_t) bootSector[0x2C]);
+	configBootSector->fileSystemInfoSector= swap_int16((int16_t) bootSector[0x30]);
+	configBootSector->bootSectorBackup= swap_int16((int16_t) bootSector[0x32]);
 }
 
 
