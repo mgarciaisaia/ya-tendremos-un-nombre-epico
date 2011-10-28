@@ -10,10 +10,18 @@
 #include "src/configuracion.h"
 #include "src/log.h"
 
-static const char *RUTA_ARCHIVO_CONFIGURACION = "../conf/planificador.ini";
+static const char *RUTA_ARCHIVO_CONFIGURACION = "/home/desert69/operativos/workspace/planificadorDisco/conf/planificador.ini";
 static const int SECTOR_SIZE = 512;
 //typedef char* string;
 
+struct s_configuracion {
+	string rutaAlDisco;
+	int archivoDisco;
+	off_t tamanioDisco;
+	string modo;
+	t_log *logger;
+};
+typedef struct s_configuracion configuracion;
 
 struct fat32_bootRecord {
 	char jumpInstruction[3];
@@ -63,17 +71,21 @@ void salirConModoDeUso(int argc, string argv[]) {
 
 void crearLogger(configuracion *configuracion) {
 	FILE * archivoConfiguracion = fopen(RUTA_ARCHIVO_CONFIGURACION, "r");
-	string archivoLogger = valorConfiguracion(archivoConfiguracion, "logger.rutaArchivo");
+	perror("archivo config");
+	string archivoLogger = valorConfiguracion(archivoConfiguracion, "planificador.logger.rutaArchivo");
+	printf("%s\n", archivoLogger);
+	perror("archivo logger");
 	e_console_mode modoConsola = M_CONSOLE_DISABLE;
 	// yupi! strcmp devuelve 0 (a.k.a. FALSE) cuando COINCIDEN las cadenas
-	if(!strcmp("1", valorConfiguracion(archivoConfiguracion, "logger.habilitarConsola"))){
+	if(!strcmp("1", valorConfiguracion(archivoConfiguracion, "planificador.logger.habilitarConsola"))){
 		modoConsola = M_CONSOLE_ENABLE;
 	}
 	//e_message_level nivelLog = DEBUG;
 	// TODO: perdon
-	char logLeido = tolower(valorConfiguracion(archivoConfiguracion, "logger.habilitarConsola")[0]);
+	char logLeido = tolower(valorConfiguracion(archivoConfiguracion, "planificador.logger.nivelLog")[0]);
 	fclose(archivoConfiguracion);
-	log_create("planificadorDisco", archivoLogger, logLeido, modoConsola);
+	configuracion->logger = log_create("planificadorDisco", archivoLogger, logLeido, modoConsola);
+	perror("log_create");
 }
 
 /**
@@ -88,8 +100,10 @@ void configurar(int argc, string argv[], configuracion *configuracion) {
 	}
 
 	configuracion->rutaAlDisco = argv[1];
+	log_debug(configuracion->logger, "planificador","[Configuracion] Ruta al disco: %s",configuracion->rutaAlDisco);
 	FILE * archivoConfiguracion = fopen(RUTA_ARCHIVO_CONFIGURACION, "r");
 	configuracion->modo = valorConfiguracion(archivoConfiguracion, "planificador.modo");
+	log_debug(configuracion->logger, "planificador","[Configuracion] Modo: %s",configuracion->modo);
 
 	// TODO: aca deberia leer el planificador.ini y seguir leyendo configuracion
 }
@@ -112,5 +126,6 @@ int main(int argc, string *argv) {
 	leerSector(10, &data, &configuracion);
 	printf("%s", data);
 	close(configuracion.archivoDisco);
+	log_destroy(configuracion.logger);
 	return EXIT_SUCCESS;
 }
