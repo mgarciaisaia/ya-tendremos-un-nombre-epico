@@ -70,13 +70,16 @@ void leerBootSector(fat32_sector bootSector,
 	configBootSector->sectorSize = swap_int16((int16_t) bootSector[0x0B]);
 	configBootSector->fatOffset = swap_int16((int16_t) bootSector[0x0E]);
 	configBootSector->sectorCount= swap_int32((int32_t) bootSector[0x20]);
-	configBootSector->fatSize=swap_int32((int32_t) bootSector[0x16]);
+	configBootSector->fatSize=swap_int32((int32_t) bootSector[0x24]);
 	configBootSector->fatVersion = swap_int16((int16_t) bootSector[0x2A]);
 	configBootSector->rootDirectory= swap_int32((int32_t) bootSector[0x2C]);
 	configBootSector->fileSystemInfoSector= swap_int16((int16_t) bootSector[0x30]);
 	configBootSector->bootSectorBackup= swap_int16((int16_t) bootSector[0x32]);
 }
 
+void setFSInfoSector(struct fileSystemInfoSector *fsInfoSector){
+	fsInfoSector->free_clusters= swap_int32(-1);
+}
 
 /**
  * Create and open a file
