@@ -41,16 +41,16 @@ struct fat32_bootRecord {
 }__attribute__ ((__packed__));
 
 struct fat32_config_boot_sector {
-	int16_t sectorSize;
+	uint16_t sectorSize;
 	char clusterSize;
-	int16_t fatOffset; // Sectores desde el inicio de este sector hasta la primer FAT (mínimo 1: el boot sector)
-	int32_t bootRecordOffset;
-	int32_t sectorCount; // Cantidad de sectores del disco si son mas de 64k, ver sectorCountSmall sino
-	int32_t fatSize; // Sectores por FAT
-	int16_t fatVersion; // 0 = FAT32
-	int32_t rootDirectory;
-	int16_t fileSystemInfoSector;
-	int16_t bootSectorBackup;
+	uint16_t fatOffset; // Sectores desde el inicio de este sector hasta la primer FAT (mínimo 1: el boot sector)
+	uint32_t bootRecordOffset;
+	uint32_t sectorCount; // Cantidad de sectores del disco si son mas de 64k, ver sectorCountSmall sino
+	uint32_t fatSize; // Sectores por FAT
+	uint16_t fatVersion; // 0 = FAT32
+	uint32_t rootDirectory;
+	uint16_t fileSystemInfoSector;
+	uint16_t bootSectorBackup;
 }__attribute__ ((__packed__));
 
 struct fileSystemInfoSector {
@@ -66,15 +66,16 @@ struct fileSystemInfoSector {
 void leerBootSector(fat32_sector bootSector,
 		struct fat32_config_boot_sector * configBootSector) {
 	configBootSector->clusterSize = bootSector[0x0D];
-	configBootSector->bootRecordOffset = swap_int32( (int32_t) bootSector[0x1C] );
-	configBootSector->sectorSize = swap_int16((int16_t) bootSector[0x0B]);
-	configBootSector->fatOffset = swap_int16((int16_t) bootSector[0x0E]);
-	configBootSector->sectorCount= swap_int32((int32_t) bootSector[0x20]);
-	configBootSector->fatSize=swap_int32((int32_t) bootSector[0x24]);
-	configBootSector->fatVersion = swap_int16((int16_t) bootSector[0x2A]);
-	configBootSector->rootDirectory= swap_int32((int32_t) bootSector[0x2C]);
-	configBootSector->fileSystemInfoSector= swap_int16((int16_t) bootSector[0x30]);
-	configBootSector->bootSectorBackup= swap_int16((int16_t) bootSector[0x32]);
+	configBootSector->bootRecordOffset = swap_uint32( (uint32_t) bootSector[0x1C] );
+	//FIXME: bootSector[0x0B] da 0, pero bootSector[0x0C] da los 512 que esperamos
+	configBootSector->sectorSize = swap_uint16((uint16_t) bootSector[0x0B]);
+	configBootSector->fatOffset = swap_uint16((uint16_t) bootSector[0x0E]);
+	configBootSector->sectorCount= swap_uint32((uint32_t) bootSector[0x20]);
+	configBootSector->fatSize=swap_uint32((uint32_t) bootSector[0x24]);
+	configBootSector->fatVersion = swap_uint16((uint16_t) bootSector[0x2A]);
+	configBootSector->rootDirectory= swap_uint32((uint32_t) bootSector[0x2C]);
+	configBootSector->fileSystemInfoSector= swap_uint16((uint16_t) bootSector[0x30]);
+	configBootSector->bootSectorBackup= swap_uint16((uint16_t) bootSector[0x32]);
 }
 
 void setFSInfoSector(struct fileSystemInfoSector *fsInfoSector){
@@ -282,23 +283,25 @@ static struct fuse_operations fat32_operations = {
 
 int main(int argc, char *argv[]) {
 			configuracion configuracion;
+			configuracion.rutaAlDisco = "/home/misaia/fat32.disk";
 			abrirArchivoDisco(&configuracion);
 		    fat32_sector bootSector;
-			leerSector(1, &bootSector, &configuracion);
+			leerSector(0, &bootSector, &configuracion);
 			struct fat32_config_boot_sector configBootSector;
 			leerBootSector(bootSector, &configBootSector );
 
-			printf("Sector size: %" PRId16, &configBootSector.sectorSize);
-			printf("Cluster Size: %s", &configBootSector.clusterSize);
-			printf("bootRecordOffset: %" PRId32, &configBootSector.bootRecordOffset);
-			printf("fatOffset: %" PRId16, &configBootSector.fatOffset);
-			printf("Sector Count: %"PRId32,&configBootSector.sectorCount);
-			printf("Fat Size: %"PRId32,&configBootSector.fatSize);
-			printf("Fat Version: %"PRId16,&configBootSector.fatVersion);
-			printf("rootDirectory: %"PRId32,&configBootSector.rootDirectory);
-			printf("File System Info Sector: %"PRId16,&configBootSector.fileSystemInfoSector);
-			printf("boot Sector Backup: %"PRId16,&configBootSector.bootSectorBackup);
+			printf("Sector size: %u\n", configBootSector.sectorSize);
+			printf("Cluster Size: %u\n", configBootSector.clusterSize);
+			printf("bootRecordOffset: %u\n", configBootSector.bootRecordOffset);
+			printf("fatOffset: %u\n", configBootSector.fatOffset);
+			printf("Sector Count: %u\n",configBootSector.sectorCount);
+			printf("Fat Size: %u\n",configBootSector.fatSize);
+			printf("Fat Version: %u\n",configBootSector.fatVersion);
+			printf("rootDirectory: %u\n",configBootSector.rootDirectory);
+			printf("File System Info Sector: %u\n",configBootSector.fileSystemInfoSector);
+			printf("boot Sector Backup: %u\n",configBootSector.bootSectorBackup);
 
 			close(configuracion.archivoDisco);
+			return 0;
 	return fuse_main(argc, argv, &fat32_operations, NULL);
 }
