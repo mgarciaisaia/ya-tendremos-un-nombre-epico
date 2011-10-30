@@ -23,10 +23,12 @@ string valorConfiguracion(FILE * archivo, string clave) {
 		if (claveLeida != NULL) {
 			if (strcmp(clave, claveLeida) == STRCMP_MISMA_CADENA) {
 				string valor = strtok(NULL, ";");
+				string dato = malloc(sizeof valor + 1);
+				strcpy(dato,valor);
 				//if(str)
 				// FIXME: esto tiene que ir por logging en debug/info
-				printf("El valor de %s es %s", clave, valor);
-				return valor;
+				printf("El valor de %s es %s", clave, dato);
+				return dato;
 			}
 		}
 	}

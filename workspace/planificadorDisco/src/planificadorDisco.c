@@ -10,7 +10,7 @@
 #include "src/configuracion.h"
 #include "src/log.h"
 
-static const char *RUTA_ARCHIVO_CONFIGURACION = "/home/desert69/operativos/workspace/planificadorDisco/conf/planificador.ini";
+static const char *RUTA_ARCHIVO_CONFIGURACION = "/home/misaia/operativos/workspace/planificadorDisco/conf/planificador.ini";
 static const int SECTOR_SIZE = 512;
 //typedef char* string;
 
