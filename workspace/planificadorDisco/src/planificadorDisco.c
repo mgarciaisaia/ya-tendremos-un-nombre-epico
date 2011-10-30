@@ -12,16 +12,6 @@
 
 static const char *RUTA_ARCHIVO_CONFIGURACION = "/home/misaia/operativos/workspace/planificadorDisco/conf/planificador.ini";
 static const int SECTOR_SIZE = 512;
-//typedef char* string;
-
-struct s_configuracion {
-	string rutaAlDisco;
-	int archivoDisco;
-	off_t tamanioDisco;
-	string modo;
-	t_log *logger;
-};
-typedef struct s_configuracion configuracion;
 
 struct fat32_bootRecord {
 	char jumpInstruction[3];

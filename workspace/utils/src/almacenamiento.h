@@ -25,7 +25,7 @@ struct s_configuracion {
 	int archivoDisco;
 	off_t tamanioDisco;
 	string modo;
-	t_log logger;
+	t_log *logger;
 };
 typedef struct s_configuracion configuracion;
 
