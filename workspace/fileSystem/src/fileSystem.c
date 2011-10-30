@@ -1,6 +1,7 @@
 // Antes de incluir nada, para que no lo pisen
 #define FUSE_USE_VERSION 26
 
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <fuse.h>
@@ -277,5 +278,24 @@ static struct fuse_operations fat32_operations = {
 };
 
 int main(int argc, char *argv[]) {
+			configuracion configuracion;
+			abrirArchivoDisco(&configuracion);
+		    fat32_sector bootSector;
+			leerSector(1, &bootSector, &configuracion);
+			struct fat32_config_boot_sector configBootSector;
+			leerBootSector(bootSector, &configBootSector );
+
+			printf("Sector size: %" PRId16, &configBootSector.sectorSize);
+			printf("Cluster Size: %s", &configBootSector.clusterSize);
+			printf("bootRecordOffset: %" PRId32, &configBootSector.bootRecordOffset);
+			printf("fatOffset: %" PRId16, &configBootSector.fatOffset);
+			printf("Sector Count: %"PRId32,&configBootSector.sectorCount);
+			printf("Fat Size: %"PRId32,&configBootSector.fatSize);
+			printf("Fat Version: %"PRId16,&configBootSector.fatVersion);
+			printf("rootDirectory: %"PRId32,&configBootSector.rootDirectory);
+			printf("File System Info Sector: %"PRId16,&configBootSector.fileSystemInfoSector);
+			printf("boot Sector Backup: %"PRId16,&configBootSector.bootSectorBackup);
+
+			close(configuracion.archivoDisco);
 	return fuse_main(argc, argv, &fat32_operations, NULL);
 }
